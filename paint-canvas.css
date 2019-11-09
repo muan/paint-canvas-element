@@ -6,4 +6,5 @@ paint-canvas {
 body {
   font-family: monospace;
   text-align: center;
+  user-select: none;
 }
