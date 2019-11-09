@@ -148,16 +148,22 @@ function historyControl(event) {
 }
 
 function redraw(element, toStep) {
-  element.clear()
   const {context} = states.get(element)
   const history = histories.get(element)
   const {log} = history
-  context.lineJoin = 'round'
-  context.lineCap = 'round'
-  history.currentStep = Math.max(Math.min(toStep, log.length), 0)
-  for (const entry of log.slice(0, history.currentStep)) {
+  const destination = Math.max(Math.min(toStep, log.length), 0)
+  let start
+  if (history.currentStep <= destination) {
+    start = history.currentStep
+  } else {
+    element.clear()
+    start = 0
+  }
+  for (const entry of log.slice(start, destination)) {
     context.beginPath()
     for (const [from, to, color, size] of entry) {
+      context.lineJoin = 'round'
+      context.lineCap = 'round'
       context.lineWidth = size
       context.strokeStyle = color
       context.moveTo(...from)
@@ -166,6 +172,7 @@ function redraw(element, toStep) {
     }
     context.closePath()
   }
+  history.currentStep = destination
 }
 
 function startDrawing(event) {
