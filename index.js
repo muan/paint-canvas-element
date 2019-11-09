@@ -160,17 +160,17 @@ function redraw(element, toStep) {
     start = 0
   }
   for (const entry of log.slice(start, destination)) {
-    context.beginPath()
     for (const [from, to, color, size] of entry) {
       context.lineJoin = 'round'
       context.lineCap = 'round'
       context.lineWidth = size
       context.strokeStyle = color
+      context.beginPath()
       context.moveTo(...from)
       context.lineTo(...to)
       context.stroke()
+      context.closePath()
     }
-    context.closePath()
   }
   history.currentStep = destination
 }
@@ -179,12 +179,6 @@ function startDrawing(event) {
   if (event.touches && event.touches.length > 1) return
   if (event.touches) event.preventDefault()
   state = states.get(event.currentTarget)
-  const {context, color, size} = state
-  context.lineJoin = 'round'
-  context.lineCap = 'round'
-  context.lineWidth = size
-  context.strokeStyle = color
-  context.beginPath()
   state.drawing = true
   event.currentTarget.isDrawing = true
 }
@@ -195,7 +189,6 @@ function stopDrawing(event) {
   const state = states.get(event.currentTarget)
   const history = histories.get(event.currentTarget)
   draw(event)
-  state.context.closePath()
 
   if (history.currentEntry.length > 0) {
     // Rewrite history if we are not at the latest step
@@ -228,9 +221,15 @@ function draw(event) {
   const from = [lastX || offsetX, lastY || offsetY]
   const to = [offsetX, offsetY]
   history.currentEntry.push([from, to, color, size])
+  context.lineJoin = 'round'
+  context.lineCap = 'round'
+  context.lineWidth = size
+  context.strokeStyle = color
+  context.beginPath()
   context.moveTo(...from)
   context.lineTo(...to)
   context.stroke()
+  context.closePath()
 
   state.lastX = offsetX
   state.lastY = offsetY
