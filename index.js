@@ -58,17 +58,23 @@ class PaintCanvasElement extends HTMLElement {
 
   connectedCallback() {
     this.addEventListener('mousedown', startDrawing)
+    this.addEventListener('touchstart', startDrawing)
     this.addEventListener('mouseup', stopDrawing)
+    this.addEventListener('touchcancel', stopDrawing)
     this.addEventListener('mouseleave', stopDrawing)
+    this.addEventListener('touchend', stopDrawing)
+    this.addEventListener('touchmove', draw)
     this.addEventListener('mousemove', draw)
   }
 }
 
 function startDrawing(event) {
+  event.preventDefault()
   states.get(event.currentTarget).drawing = true
 }
 
 function stopDrawing(event) {
+  event.preventDefault()
   const state = states.get(event.currentTarget)
   draw(event)
   state.drawing = false
@@ -77,14 +83,17 @@ function stopDrawing(event) {
 }
 
 function draw(event) {
+  event.preventDefault()
   const state = states.get(event.currentTarget)
   const {drawing, color, diameter, lastX, lastY} = state
   if (!drawing) return
 
-  const {offsetX, offsetY} = event
+  const {pageX, pageY} = event
   const canvas = event.currentTarget.canvas
   const ctx = canvas.getContext('2d')
   ctx.fillStyle = color
+  const offsetX = pageX - canvas.offsetLeft
+  const offsetY = pageY - canvas.offsetTop
 
   const points = createRange([offsetX, offsetY], [lastX || offsetX, lastY || offsetY])
 
