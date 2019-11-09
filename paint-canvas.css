@@ -21,11 +21,8 @@ body {
   display: none;
 }
 
-.fullscreen ~ .tools {
-  position: absolute;
-}
-
 .tools {
+  position: fixed;
   border: 1px solid;
   top: 0;
   right: 0;
