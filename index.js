@@ -12,7 +12,8 @@ class PaintCanvasElement extends HTMLElement {
     states.set(this, {
       drawing: false,
       color: "#000000",
-      diameter: 3,
+      bgcolor: "#ffffff",
+      size: 10,
       canvas,
       context: canvas.getContext('2d')
     })
@@ -120,7 +121,7 @@ class PaintCanvasElement extends HTMLElement {
       this.reset()
     }
     if (attr === 'color') state.color = newValue
-    if (attr === 'size') state.diameter = newValue
+    if (attr === 'size') state.size = newValue
     if (attr === 'bgcolor') {
       state.bgcolor = newValue
       this.reset()
@@ -148,17 +149,17 @@ function historyControl(event) {
 
 function redraw(element, toStep) {
   element.clear()
-  const {context, color, diameter} = states.get(element)
+  const {context} = states.get(element)
   const history = histories.get(element)
   const {log} = history
   context.lineJoin = 'round'
   context.lineCap = 'round'
-  context.lineWidth = diameter
-  context.strokeStyle = color
   history.currentStep = Math.max(Math.min(toStep, log.length), 0)
   for (const entry of log.slice(0, history.currentStep)) {
     context.beginPath()
-    for (const [from, to] of entry) {
+    for (const [from, to, color, size] of entry) {
+      context.lineWidth = size
+      context.strokeStyle = color
       context.moveTo(...from)
       context.lineTo(...to)
       context.stroke()
@@ -171,10 +172,10 @@ function startDrawing(event) {
   if (event.touches && event.touches.length > 1) return
   if (event.touches) event.preventDefault()
   state = states.get(event.currentTarget)
-  const {context, color, diameter} = state
+  const {context, color, size} = state
   context.lineJoin = 'round'
   context.lineCap = 'round'
-  context.lineWidth = diameter
+  context.lineWidth = size
   context.strokeStyle = color
   context.beginPath()
   state.drawing = true
@@ -210,7 +211,7 @@ function draw(event) {
   if (event.touches) event.preventDefault()
   const state = states.get(event.currentTarget)
   const history = histories.get(event.currentTarget)
-  const {drawing, canvas, context, color, diameter, lastX, lastY} = state
+  const {drawing, canvas, context, color, size, lastX, lastY} = state
   if (!drawing) return
 
   const {pageX, pageY} = event
@@ -219,7 +220,7 @@ function draw(event) {
 
   const from = [lastX || offsetX, lastY || offsetY]
   const to = [offsetX, offsetY]
-  history.currentEntry.push([from, to])
+  history.currentEntry.push([from, to, color, size])
   context.moveTo(...from)
   context.lineTo(...to)
   context.stroke()
