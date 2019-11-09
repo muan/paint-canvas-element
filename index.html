@@ -38,6 +38,13 @@
         paintCanvas.classList.toggle('fullscreen', paintCanvas.height === window.innerHeight && paintCanvas.width === window.innerWidth)
       })
 
+      document.addEventListener('keydown', event => {
+        if (!event.shiftKey || !['ArrowUp', 'ArrowDown'].includes(event.key)) return
+        const sizeInput = document.querySelector('#size')
+        event.key === 'ArrowUp' ? sizeInput.stepUp() : sizeInput.stepDown()
+        sizeInput.dispatchEvent(new Event('input', {bubbles: true}))
+      })
+
       const reset = document.querySelector('#reset')
       reset.addEventListener('click', () => confirm('Are you sure?') && paintCanvas.reset())
       const button = document.querySelector('#button')
