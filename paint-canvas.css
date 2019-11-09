@@ -1,6 +1,7 @@
 paint-canvas {
   display: inline-block;
   font-size: 0;
+  outline: none;
 }
 
 body {

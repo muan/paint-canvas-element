@@ -22,8 +22,6 @@ class PaintCanvasElement extends HTMLElement {
       currentEntry: [],
       currentStep: 0
     })
-
-    this.addEventListener('keydown', historyControl)
   }
 
   static get observedAttributes() {
@@ -80,6 +78,8 @@ class PaintCanvasElement extends HTMLElement {
     this.addEventListener('touchend', stopDrawing)
     this.addEventListener('touchmove', draw)
     this.addEventListener('mousemove', draw)
+    this.addEventListener('keydown', historyControl)
+    this.setAttribute('tabindex', '-1')
   }
 }
 
