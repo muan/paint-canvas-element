@@ -114,17 +114,17 @@ class PaintCanvasElement extends HTMLElement {
     const state = states.get(this)
     if (attr === 'height') {
       state.height = newValue
-      this.reset()
+      redraw(this)
     }
     if (attr === 'width') {
       state.width = newValue
-      this.reset()
+      redraw(this)
     }
     if (attr === 'color') state.color = newValue
     if (attr === 'size') state.size = newValue
     if (attr === 'bgcolor') {
       state.bgcolor = newValue
-      this.reset()
+      redraw(this)
     }
   }
 
@@ -138,7 +138,7 @@ class PaintCanvasElement extends HTMLElement {
     this.addEventListener('touchmove', draw)
     this.addEventListener('mousemove', draw)
     this.addEventListener('keydown', historyControl)
-    this.setAttribute('tabindex', '-1')
+    this.setAttribute('tabindex', '0')
   }
 }
 
@@ -151,9 +151,9 @@ function redraw(element, toStep) {
   const {context} = states.get(element)
   const history = histories.get(element)
   const {log} = history
-  const destination = Math.max(Math.min(toStep, log.length), 0)
+  const destination = toStep === undefined ? history.currentStep : Math.max(Math.min(toStep, log.length), 0)
   let start
-  if (history.currentStep <= destination) {
+  if (toStep && history.currentStep <= destination) {
     start = history.currentStep
   } else {
     element.clear()
