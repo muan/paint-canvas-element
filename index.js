@@ -60,6 +60,7 @@ function startDrawing(event) {
 
 function stopDrawing(event) {
   const state = states.get(event.currentTarget)
+  draw(event)
   state.drawing = false
   state.lastX = null
   state.lastY = null
