@@ -152,13 +152,10 @@ function stopDrawing(event) {
   if (history.currentEntry.length > 0) {
     // Rewrite history if we are not at the latest step
     if (history.currentStep !== history.log.length) {
-      console.log('rewrite')
       history.log = history.log.slice(0, history.currentStep)
     }
     history.log.push(history.currentEntry)
-
     history.currentStep = history.log.length
-    console.log(history.log.length)
   }
   history.currentEntry = []
 
