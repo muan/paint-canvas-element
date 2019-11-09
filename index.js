@@ -28,6 +28,46 @@ class PaintCanvasElement extends HTMLElement {
     return ['height', 'width', 'color', 'size', 'bgcolor']
   }
 
+  get height() {
+    return Number(this.getAttribute('height'))
+  }
+
+  set height(value) {
+    this.setAttribute('height', value)
+  }
+
+  get width() {
+    return Number(this.getAttribute('width'))
+  }
+
+  set width(value) {
+    this.setAttribute('width', value)
+  }
+
+  get color() {
+    return this.getAttribute('color')
+  }
+
+  set color(value) {
+    this.setAttribute('color', value)
+  }
+
+  get size() {
+    return Number(this.getAttribute('size'))
+  }
+
+  set size(value) {
+    this.setAttribute('size', value)
+  }
+
+  get bgcolor() {
+    return this.getAttribute('bgcolor')
+  }
+
+  set bgcolor(value) {
+    this.setAttribute('bgcolor', value)
+  }
+
   get isDrawing() {
     return this.hasAttribute('drawing')
   }
