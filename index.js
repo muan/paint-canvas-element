@@ -18,6 +18,22 @@ class PaintCanvasElement extends HTMLElement {
     return ['height', 'width', 'color', 'size', 'bgcolor']
   }
 
+  reset() {
+    const {bgcolor, width, height} = states.get(this)
+
+    this.canvas.style.width = `${width}px`
+    this.canvas.width = Number(width) * window.devicePixelRatio
+    this.canvas.style.height = `${height}px`
+    this.canvas.height = Number(height) * window.devicePixelRatio
+
+    const ctx = this.canvas.getContext('2d')
+    this.canvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio)
+    ctx.beginPath()
+    ctx.fillStyle = bgcolor
+    ctx.fillRect(0, 0, width, height)
+    ctx.closePath()
+  }
+
   get canvas() {
     return this.shadowRoot.querySelector('canvas')
   }
@@ -25,24 +41,18 @@ class PaintCanvasElement extends HTMLElement {
   attributeChangedCallback(attr, oldValue, newValue) {
     const state = states.get(this)
     if (attr === 'height') {
-      this.canvas.style.height = `${newValue}px`
-      this.canvas.height = Number(newValue) * window.devicePixelRatio
-      this.canvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio)
+      state.height = newValue
+      this.reset()
     }
     if (attr === 'width') {
-      this.canvas.style.width = `${newValue}px`
-      this.canvas.width = Number(newValue) * window.devicePixelRatio
-      this.canvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio)
+      state.width = newValue
+      this.reset()
     }
     if (attr === 'color') state.color = newValue
     if (attr === 'size') state.diameter = newValue
     if (attr === 'bgcolor') {
       state.bgcolor = newValue
-      const ctx = this.canvas.getContext('2d')
-      ctx.beginPath()
-      ctx.fillStyle = state.bgcolor
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-      ctx.closePath()
+      this.reset()
     }
   }
 

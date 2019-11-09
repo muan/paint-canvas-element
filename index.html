@@ -12,17 +12,18 @@
     <label for="size">height (resest)</label>
     <input type="number" id="height" name="height" max="1000" min="100" value="300">
     <label for="size">size</label>
-    <input type="number" id="size" name="size" max="30" min="1" value="3">
+    <input type="number" id="size" name="size" max="30" min="1" value="5">
     <label for="bgcolor">bgcolor (resest)</label>
     <input type="color" id="bgcolor" name="bgcolor" value="#eeeeee">
     <label for="color">color</label>
     <input type="color" id="color" name="color" value="#000000">
     <br><br>
 
-    <paint-canvas color="#000000" width="600" height="300" bgcolor="#eeeeee"></paint-canvas>
+    <paint-canvas color="#000000" width="600" height="300" size="5" bgcolor="#eeeeee"></paint-canvas>
 
     <br><br>
     <button type="button" id="button">download</button>
+    <button type="resset" id="reset">reset</button>
     <br><br>
 
     <script type="text/javascript">
@@ -32,6 +33,8 @@
         paintCanvas.setAttribute(event.target.name, event.target.value)
       })
       const button = document.querySelector('#button')
+      const reset = document.querySelector('#reset')
+      reset.addEventListener('click', () => confirm('Are you sure?') && paintCanvas.reset())
       button.addEventListener('click', event => {
         const a = document.createElement('a')
         a.href = paintCanvas.canvas.toDataURL('image/png')
