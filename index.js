@@ -36,6 +36,18 @@ class PaintCanvasElement extends HTMLElement {
     value ? this.setAttribute('drawing', '') : this.removeAttribute('drawing')
   }
 
+  undo() {
+    const history = histories.get(this)
+    const {currentStep} = history
+    redraw(this, currentStep - 1)
+  }
+
+  redo() {
+    const history = histories.get(this)
+    const {currentStep} = history
+    redraw(this, currentStep + 1)
+  }
+
   reset() {
     const {canvas, context, bgcolor, width, height} = states.get(this)
 
@@ -85,9 +97,7 @@ class PaintCanvasElement extends HTMLElement {
 
 function historyControl(event) {
   if (event.key.toLowerCase() !== 'z' || (!event.metaKey && !event.ctrlKey)) return
-  const history = histories.get(event.currentTarget)
-  const {currentStep} = history
-  redraw(event.currentTarget, currentStep + (event.shiftKey ? 1 : -1))
+  event.shiftKey ? event.currentTarget.redo() : event.currentTarget.undo()
 }
 
 function redraw(element, toStep) {
@@ -100,7 +110,7 @@ function redraw(element, toStep) {
   context.lineWidth = diameter
   context.strokeStyle = color
   history.currentStep = Math.max(Math.min(toStep, log.length), 0)
-  for (const entry of log.slice(0, toStep)) {
+  for (const entry of log.slice(0, history.currentStep)) {
     context.beginPath()
     for (const [from, to] of entry) {
       context.moveTo(...from)
