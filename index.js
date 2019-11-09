@@ -172,7 +172,13 @@ function redraw(element, toStep) {
       context.closePath()
     }
   }
-  history.currentStep = destination
+  if (history.currentStep !== destination) {
+    history.currentStep = destination
+    element.dispatchEvent(new CustomEvent('paint-canvas:history-step', {
+      bubbles: true,
+      detail: history
+    }))
+  }
 }
 
 function startDrawing(event) {
@@ -197,6 +203,10 @@ function stopDrawing(event) {
     }
     history.log.push(history.currentEntry)
     history.currentStep = history.log.length
+    event.currentTarget.dispatchEvent(new CustomEvent('paint-canvas:history-change', {
+      bubbles: true,
+      detail: history
+    }))
   }
   history.currentEntry = []
 

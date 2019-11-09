@@ -70,3 +70,14 @@ input {
   color: dodgerblue;
 
 }
+
+.undo-redo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.undo-redo button {
+  width: 48%;
+  flex-grow: 0;
+}
