@@ -29,6 +29,10 @@ class PaintCanvasElement extends HTMLElement {
     return ['height', 'width', 'color', 'size', 'bgcolor']
   }
 
+  get canvas() {
+    return states.get(this).canvas
+  }
+
   get height() {
     return Number(this.getAttribute('height'))
   }
