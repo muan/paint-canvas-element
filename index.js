@@ -1,4 +1,5 @@
 const states = new WeakMap()
+const histories = new WeakMap()
 
 class PaintCanvasElement extends HTMLElement {
   constructor() {
@@ -16,6 +17,13 @@ class PaintCanvasElement extends HTMLElement {
       context: canvas.getContext('2d')
     })
 
+    histories.set(this, {
+      log: [],
+      currentEntry: [],
+      currentStep: 0
+    })
+
+    this.addEventListener('keydown', historyControl)
   }
 
   static get observedAttributes() {
@@ -75,6 +83,34 @@ class PaintCanvasElement extends HTMLElement {
   }
 }
 
+function historyControl(event) {
+  if (event.key.toLowerCase() !== 'z' || (!event.metaKey && !event.ctrlKey)) return
+  const history = histories.get(event.currentTarget)
+  const {currentStep} = history
+  redraw(event.currentTarget, currentStep + (event.shiftKey ? 1 : -1))
+}
+
+function redraw(element, toStep) {
+  element.reset()
+  const {context, color, diameter} = states.get(element)
+  const history = histories.get(element)
+  const {log} = history
+  context.lineJoin = 'round'
+  context.lineCap = 'round'
+  context.lineWidth = diameter
+  context.strokeStyle = color
+  history.currentStep = Math.max(Math.min(toStep, log.length), 0)
+  for (const entry of log.slice(0, toStep)) {
+    context.beginPath()
+    for (const [from, to] of entry) {
+      context.moveTo(...from)
+      context.lineTo(...to)
+      context.stroke()
+    }
+    context.closePath()
+  }
+}
+
 function startDrawing(event) {
   if (event.touches && event.touches.length > 1) return
   if (event.touches) event.preventDefault()
@@ -93,8 +129,20 @@ function stopDrawing(event) {
   if (event.touches && event.touches.length > 1) return
   if (event.touches) event.preventDefault()
   const state = states.get(event.currentTarget)
+  const history = histories.get(event.currentTarget)
   draw(event)
   state.context.closePath()
+
+  if (history.currentEntry.length > 0) {
+    // Rewrite history if we are not at the latest step
+    if (history.currentStep !== history.log.length) {
+      history.log = history.log.slice(0, history.currentStep)
+    }
+    history.log.push(history.currentEntry)
+    history.currentStep = history.log.length
+  }
+  history.currentEntry = []
+
   state.drawing = false
   event.currentTarget.isDrawing(false)
   state.lastX = null
@@ -105,6 +153,7 @@ function draw(event) {
   if (event.touches && event.touches.length > 1) return
   if (event.touches) event.preventDefault()
   const state = states.get(event.currentTarget)
+  const history = histories.get(event.currentTarget)
   const {drawing, canvas, context, color, diameter, lastX, lastY} = state
   if (!drawing) return
 
@@ -112,8 +161,11 @@ function draw(event) {
   const offsetX = pageX - canvas.offsetLeft
   const offsetY = pageY - canvas.offsetTop
 
-  context.moveTo(lastX || offsetX, lastY || offsetY)
-  context.lineTo(offsetX, offsetY)
+  const from = [lastX || offsetX, lastY || offsetY]
+  const to = [offsetX, offsetY]
+  history.currentEntry.push([from, to])
+  context.moveTo(...from)
+  context.lineTo(...to)
   context.stroke()
 
   state.lastX = offsetX
