@@ -2,18 +2,14 @@ paint-canvas {
   display: inline-block;
   font-size: 0;
   outline: none;
+  vertical-align: top;
 }
 
 body {
   font-family: sans-serif;
-  text-align: center;
   user-select: none;
+  margin: 0;
 }
-
-input[type="number"] {
-  width: 50px;
-}
-
 
 .fullscreen {
   position: absolute;
@@ -25,6 +21,46 @@ input[type="number"] {
   display: none;
 }
 
+.fullscreen ~ .tools {
+  position: absolute;
+}
+
 .tools {
-  position: relative;
+  border: 1px solid;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  background: #fff;
+  width: 260px;
+  padding: 16px;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.tools-panel {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+label {
+  flex: auto;
+  width: 50%;
+  margin-bottom: 5px;
+}
+
+button {
+  border: 1px solid;
+  padding: 10px 15px;
+  flex: auto;
+  width: 100%;
+  margin-top: 10px;
+}
+
+input {
+  flex: 1 0 auto;
+  padding: 3px 6px;
+  margin-bottom: 5px;
+  font: inherit;
 }
