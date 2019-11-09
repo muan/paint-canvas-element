@@ -18,6 +18,14 @@ class PaintCanvasElement extends HTMLElement {
     return ['height', 'width', 'color', 'size', 'bgcolor']
   }
 
+  isDrawing(drawing) {
+    if (drawing !== null) {
+      drawing ? this.setAttribute('drawing', '') : this.removeAttribute('drawing')
+    } else {
+      return this.hasAttribute('drawing')
+    }
+  }
+
   reset() {
     const {bgcolor, width, height} = states.get(this)
 
@@ -69,21 +77,26 @@ class PaintCanvasElement extends HTMLElement {
 }
 
 function startDrawing(event) {
-  event.preventDefault()
+  if (event.touches && event.touches.length > 1) return
+  if (event.touches) event.preventDefault()
   states.get(event.currentTarget).drawing = true
+  event.currentTarget.isDrawing(true)
 }
 
 function stopDrawing(event) {
-  event.preventDefault()
+  if (event.touches && event.touches.length > 1) return
+  if (event.touches) event.preventDefault()
   const state = states.get(event.currentTarget)
   draw(event)
   state.drawing = false
+  event.currentTarget.isDrawing(false)
   state.lastX = null
   state.lastY = null
 }
 
 function draw(event) {
-  event.preventDefault()
+  if (event.touches && event.touches.length > 1) return
+  if (event.touches) event.preventDefault()
   const state = states.get(event.currentTarget)
   const {drawing, color, diameter, lastX, lastY} = state
   if (!drawing) return
