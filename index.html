@@ -30,7 +30,7 @@
           </div>
           <button type="button" id="reset">Clear/Reset</button>
           <button type="button" id="fullscreen">Fullscreen</button>
-          <button type="button" id="button">Download</button>
+          <button type="button" id="download">Download</button>
           <a class="link" href="https://github.com/muan/paint-canvas-element">muan/paint-canvas-element</a>
         </div>
     </details>
@@ -52,8 +52,8 @@
 
       const reset = document.querySelector('#reset')
       reset.addEventListener('click', () => confirm('Are you sure?') && paintCanvas.reset())
-      const button = document.querySelector('#button')
-      button.addEventListener('click', event => {
+      const download = document.querySelector('#download')
+      download.addEventListener('click', event => {
         const a = document.createElement('a')
         a.href = paintCanvas.canvas.toDataURL('image/png')
         document.body.append(a)
