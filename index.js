@@ -48,9 +48,8 @@ class PaintCanvasElement extends HTMLElement {
     redraw(this, currentStep + 1)
   }
 
-  reset() {
+  clear() {
     const {canvas, context, bgcolor, width, height} = states.get(this)
-
     canvas.style.width = `${width}px`
     canvas.width = Number(width) * window.devicePixelRatio
     canvas.style.height = `${height}px`
@@ -61,6 +60,13 @@ class PaintCanvasElement extends HTMLElement {
     context.fillStyle = bgcolor
     context.fillRect(0, 0, width, height)
     context.closePath()
+  }
+
+  reset() {
+    this.clear()
+    const history = histories.get(this)
+    history.log = []
+    history.currentStep = 0
   }
 
   attributeChangedCallback(attr, oldValue, newValue) {
@@ -101,7 +107,7 @@ function historyControl(event) {
 }
 
 function redraw(element, toStep) {
-  element.reset()
+  element.clear()
   const {context, color, diameter} = states.get(element)
   const history = histories.get(element)
   const {log} = history
@@ -146,10 +152,13 @@ function stopDrawing(event) {
   if (history.currentEntry.length > 0) {
     // Rewrite history if we are not at the latest step
     if (history.currentStep !== history.log.length) {
+      console.log('rewrite')
       history.log = history.log.slice(0, history.currentStep)
     }
     history.log.push(history.currentEntry)
+
     history.currentStep = history.log.length
+    console.log(history.log.length)
   }
   history.currentEntry = []
 
