@@ -28,12 +28,12 @@ class PaintCanvasElement extends HTMLElement {
     return ['height', 'width', 'color', 'size', 'bgcolor']
   }
 
-  isDrawing(drawing) {
-    if (drawing !== null) {
-      drawing ? this.setAttribute('drawing', '') : this.removeAttribute('drawing')
-    } else {
-      return this.hasAttribute('drawing')
-    }
+  get isDrawing() {
+    return this.hasAttribute('drawing')
+  }
+
+  set isDrawing(value) {
+    value ? this.setAttribute('drawing', '') : this.removeAttribute('drawing')
   }
 
   reset() {
@@ -122,7 +122,7 @@ function startDrawing(event) {
   context.strokeStyle = color
   context.beginPath()
   state.drawing = true
-  event.currentTarget.isDrawing(true)
+  event.currentTarget.isDrawing = true
 }
 
 function stopDrawing(event) {
@@ -144,7 +144,7 @@ function stopDrawing(event) {
   history.currentEntry = []
 
   state.drawing = false
-  event.currentTarget.isDrawing(false)
+  event.currentTarget.isDrawing = false
   state.lastX = null
   state.lastY = null
 }
