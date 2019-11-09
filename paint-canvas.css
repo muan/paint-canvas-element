@@ -1,0 +1,9 @@
+paint-canvas {
+  display: inline-block;
+  font-size: 0;
+}
+
+body {
+  font-family: monospace;
+  text-align: center;
+}
