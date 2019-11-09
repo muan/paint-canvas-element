@@ -8,34 +8,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <label for="size">width (reset)</label>
-    <input type="number" id="width" name="width" max="1000" min="100" value="600">
-    <label for="size">height (reset)</label>
-    <input type="number" id="height" name="height" max="1000" min="100" value="300">
-    <label for="size">size</label>
-    <input type="number" id="size" name="size" max="30" min="1" value="5">
-    <label for="bgcolor">bgcolor (reset)</label>
-    <input type="color" id="bgcolor" name="bgcolor" value="#eeeeee">
-    <label for="color">color</label>
-    <input type="color" id="color" name="color" value="#000000">
-    <br><br>
-
     <paint-canvas color="#000000" width="600" height="300" size="5" bgcolor="#eeeeee"></paint-canvas>
 
     <br><br>
-    <button type="button" id="button">download</button>
-    <button type="resset" id="reset">reset</button>
-    <br><br>
+    <div class="tools">
+      <label for="size">width (reset)</label>
+      <input type="number" id="width" name="width" min="100" value="600" size="5">
+      <label for="size">height (reset)</label>
+      <input type="number" id="height" name="height" min="100" value="300" size="5">
+      <label for="size">size</label>
+      <input type="number" id="size" name="size" min="1" value="5" size="3">
+      <label for="bgcolor">bgcolor (reset)</label>
+      <input type="color" id="bgcolor" name="bgcolor" value="#eeeeee">
+      <label for="color">color</label>
+      <input type="color" id="color" name="color" value="#000000">
+      <br><br>
+      <button type="button" id="button">download</button>
+      <button type="resset" id="reset">reset</button>
+      <button type="button" id="fullscreen">fullscreen</button>
+    </div>
 
     <script type="text/javascript">
       const paintCanvas = document.querySelector('paint-canvas')
       document.addEventListener('change', event => {
         if (!event.target.reportValidity()) return
         paintCanvas.setAttribute(event.target.name, event.target.value)
+        paintCanvas.classList.toggle('fullscreen', paintCanvas.height === window.innerHeight && paintCanvas.width === window.innerWidth)
       })
-      const button = document.querySelector('#button')
+
       const reset = document.querySelector('#reset')
       reset.addEventListener('click', () => confirm('Are you sure?') && paintCanvas.reset())
+      const button = document.querySelector('#button')
       button.addEventListener('click', event => {
         const a = document.createElement('a')
         a.href = paintCanvas.canvas.toDataURL('image/png')
@@ -43,6 +46,14 @@
         a.download = `paint-canvas-${new Date().getTime()}.png`
         a.click()
         a.remove()
+      })
+
+      const fullscreen = document.querySelector('#fullscreen')
+      fullscreen.addEventListener('click', event => {
+        document.querySelector('[name=height]').value = window.innerHeight
+        document.querySelector('[name=height]').dispatchEvent(new Event('change', {bubbles: true}))
+        document.querySelector('[name=width]').value = window.innerWidth
+        document.querySelector('[name=width]').dispatchEvent(new Event('change', {bubbles: true}))
       })
     </script>
   </body>

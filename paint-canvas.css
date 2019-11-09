@@ -5,7 +5,26 @@ paint-canvas {
 }
 
 body {
-  font-family: monospace;
+  font-family: sans-serif;
   text-align: center;
   user-select: none;
+}
+
+input[type="number"] {
+  width: 50px;
+}
+
+
+.fullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.fullscreen[drawing] ~ .tools {
+  display: none;
+}
+
+.tools {
+  position: relative;
 }
