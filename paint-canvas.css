@@ -64,3 +64,9 @@ input {
   margin-bottom: 5px;
   font: inherit;
 }
+
+.link {
+  margin-top: 10px;
+  color: dodgerblue;
+
+}
