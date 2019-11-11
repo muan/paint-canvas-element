@@ -1,11 +1,11 @@
 {
   "name": "paint-canvas-element",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Paint.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Mu-An Chiou",
   "license": "MIT"
 }
